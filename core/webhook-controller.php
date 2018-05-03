@@ -21,18 +21,18 @@ class BRG_Webhook_Controller {
         foreach( $webhooks as $webhook ) {
             $action   = $webhook['action'];
             $endpoint = $webhook['endpoint'];
-            $data     = $this->get_data( $action );
 
-            add_action( $action, function() use ( $endpoint, $data ) {
+            add_action( $action, function( $default_data=false ) use ( $endpoint, $action ) {
+                $data = $this->get_data( $action, $default_data );
                 $this->make_curl( $endpoint, $data );
-            } );
+            }, 10, 1 );
         }
     }
 
     /**
      * Get the default data that should be sent with a webhook
      */
-    public function get_data( $action ) {
+    public function get_data( $action, $default_data ) {
         $data = null;
 
         // New post published (arbitrary type)
@@ -42,6 +42,21 @@ class BRG_Webhook_Controller {
                 'numberposts' => 1,
                 'post_type'   => $post_type,
             ) );
+        }
+
+        // New category
+        if( 0 === strpos( $action, 'create_' ) ) {
+            $tax_type = str_replace( 'create_', '', $action );
+            $data = get_terms( array(
+                'taxonomy'   => $tax_type,
+                'object_ids' => $default_data,
+                'hide_empty' => false,
+            ) );
+        }
+
+        // New user
+        if( 'user_register' == $action ) {
+            $data = get_user_by( 'id', $default_data );
         }
 
         // Want to allow developers the ability to modify the data.
