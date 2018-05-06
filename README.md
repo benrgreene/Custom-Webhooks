@@ -6,7 +6,9 @@ Having trouble adding webhooks? No problem! Here's some ways you can get those w
     
 While all actions can send webhooks, not all will send body data. Here's the list of webhooks that currently are supported:
     
-* **publish_[post-type]**: this one fires when a post is published. Use the post type's slug to determine for what post type the webhook is fired for (i.e. "publish_post" for posts)
+* **publish_[post-type]**: this one fires when a post is published. Use the post type's slug to determine for what post type the webhook is fired for (i.e. "publish_post" for posts). Custom post types are supported.
+* **user_register**: This fires when a new user is registered on the site. All user info _EXCEPT_ password are sent.
+* **create_[tax-type]**: this is when a new taxonomy term of the type `tax-type` is registered (where `tax-type` is the slug of the taxonomy). Custom taxonomies are supported.
     
 
 ## Contributing
