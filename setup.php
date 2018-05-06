@@ -27,8 +27,15 @@ class BRG_Webhooks {
     public function __construct() {
         $this->admin_controller = new BRG_Webhook_Admin_Interface_Controller();
         $this->webhook_controller = new BRG_Webhook_Controller();
-        BRG_Webhook_Table_Manager::get_instance();
+    }
+
+    public function proccess_saved_webhooks() {
+        if( ! empty( $_POST['brg-webhooks'] ) ) {
+            $table_manager = BRG_Webhook_Table_Manager::get_instance();
+            $table_manager->register_user_webhooks( $_POST['brg-webhooks'] );
+        }
     }
 }
 
-BRG_Webhooks::get_instance();
+$webhook_handler = BRG_Webhooks::get_instance();
+$webhook_handler->proccess_saved_webhooks();
