@@ -13,7 +13,7 @@ class BRG_Webhook_Controller {
 
     // Use the DB manager to create/update the database
     public function __construct() {
-        $webhooks = json_decode( get_option( 'webhooks' ), true );
+        $webhooks = json_decode( get_option( 'brg-webhooks' ), true );
         if( ! is_array( $webhooks) ) {
             return;
         }
@@ -47,11 +47,7 @@ class BRG_Webhook_Controller {
         // New category
         if( 0 === strpos( $action, 'create_' ) ) {
             $tax_type = str_replace( 'create_', '', $action );
-            $data = get_terms( array(
-                'taxonomy'   => $tax_type,
-                'object_ids' => $default_data,
-                'hide_empty' => false,
-            ) );
+            $data = get_term_by( 'id', $default_data, $tax_type );
         }
 
         // New user
