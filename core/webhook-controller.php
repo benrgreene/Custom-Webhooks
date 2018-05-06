@@ -53,10 +53,14 @@ class BRG_Webhook_Controller {
         // New user
         if( 'user_register' == $action ) {
             $data = get_user_by( 'id', $default_data );
+            if( false !== $data ) {
+                // This should NOT be passed
+                unset( $data->data->user_pass );
+            }
         }
 
         // Want to allow developers the ability to modify the data.
-        $data = apply_filters( 'brg/webhook/data/' . $action, $data );
+        $data = apply_filters( 'brg/webhook/data/' . $action, $data, $raw_data );
         return $data;
     }
 
