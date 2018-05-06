@@ -11,6 +11,7 @@
 
 require( 'core/admin-controller.php' );
 require( 'core/webhook-controller.php' );
+require( 'core/class-webhook-table-manager.php' );
 
 class BRG_Webhooks {
 
@@ -26,6 +27,7 @@ class BRG_Webhooks {
     public function __construct() {
         $this->admin_controller = new BRG_Webhook_Admin_Interface_Controller();
         $this->webhook_controller = new BRG_Webhook_Controller();
+        BRG_Webhook_Table_Manager::get_instance();
     }
 }
 
