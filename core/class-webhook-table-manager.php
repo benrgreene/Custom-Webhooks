@@ -53,25 +53,41 @@ class BRG_Webhook_Table_Manager extends Database_Table_Manager {
     $wpdb->query( $sql );
   }
 
-  public function get_user_webhooks( $user_id ) {
+  public function get_user_webhooks() {
     global $wpdb;
+    $user_id = $this->get_user_id();
     $sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}{$this->table_name} WHERE user_id=%d", array(
       $user_id,
     ) );
-    $results = $wpdb->get_results( $sql );
+    $results = $wpdb->get_results( $sql, ARRAY_A );
+    $results = !empty( $results ) ? $results[0]['webhook_json'] : false;
     return $results;
   }
 
   public function get_all_webhooks() {
-
+    global $wpdb;
+    $sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}{$this->table_name}" );
+    $results = $wpdb->get_results( $sql, ARRAY_A );
+    $all_webhooks = array();
+    if( !empty( $results ) ) {
+      foreach( $results as $key => $user_data ) {
+        $user_webhooks = json_decode( $user_data['webhook_json'] );
+        $all_webhooks = array_merge( $all_webhooks, $user_webhooks );
+      }
+    }
+    return $all_webhooks;
   }
 
   // Returns the default user id, or 0 for any site admins
   // false is returned for non logged in users 
   public function get_user_id() {
     $user_id = get_current_user_id();
-    $user_id = (0 == $user_id) ? false : 0;
-    $user_id = is_admin() ? 0 : $user_id;
+    if( 0 == $user_id ) {
+      $user_id = false;
+    }
+    if( current_user_can( 'activate_plugins' ) ){
+      $user_id = 0;
+    }
     return $user_id;
   }
 }

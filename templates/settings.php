@@ -7,13 +7,18 @@
 
         <table id="js-webhook-table"><tbody>
             <tr class="webhook-auth">
-                <td>Authentication</td>
-                <td><input name="brg-webhook-auth" id="brg-webhook-auth" value="<?php echo get_option('brg-webhook-auth'); ?>" /></td>
-                <td><button id="generate-auth">Generate Authentication Key</button></td>
+                <td>Authentication:</td>
+                <?php if( current_user_can( 'activate_plugins' ) ): ?>
+                    <td><input name="brg-webhook-auth" id="brg-webhook-auth" value="<?php echo get_option('brg-webhook-auth'); ?>" /></td>
+                    <td><button id="generate-auth">Generate Authentication Key</button></td>
+                <?php else: ?>
+                    <td><b><?php echo get_option('brg-webhook-auth'); ?></b></td>
+                <?php endif; ?>
             </tr>            
         <?php
-            $webhooks = json_decode( get_option( 'brg-webhooks' ), true );
-            $webhooks = $webhooks ? $webhooks : array();
+            $table_manager = BRG_Webhook_Table_Manager::get_instance();
+            $webhooks_json = $table_manager->get_user_webhooks();
+            $webhooks = !empty( $webhooks_json ) ? json_decode( $webhooks_json, true ) : array();
             foreach( $webhooks as $index => $webhook ) { ?>
                 <tr class="new-webhook webhook-<?php echo $index; ?>">
                     <td>Action</td>
