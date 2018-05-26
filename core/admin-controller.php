@@ -16,7 +16,7 @@ class BRG_Webhook_Admin_Interface_Controller {
     }
 
     public function add_admin_menu() {
-        $min_level = apply_filters( 'brg/webhooks/minimum_user_level', 'read' );
+        $min_level = apply_filters( 'brg/webhooks/minimum_user_level', 'edit_posts' );
         add_menu_page( 'Webhooks', 'Webhooks', $min_level, self::SETTINGS_PAGE_SLUG, '', 'dashicons-analytics' );
 
         // Register submenu for plugin settings - default page for the plugin

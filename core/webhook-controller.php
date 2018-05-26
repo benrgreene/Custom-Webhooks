@@ -13,8 +13,9 @@ class BRG_Webhook_Controller {
 
     // Use the DB manager to create/update the database
     public function __construct() {
-        $webhooks = json_decode( get_option( 'brg-webhooks' ), true );
-        if( ! is_array( $webhooks) ) {
+        $table_manager = BRG_Webhook_Table_Manager::get_instance();
+        $webhooks = $table_manager->get_all_webhooks();
+        if( empty( $webhooks ) ) {
             return;
         }
 

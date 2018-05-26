@@ -1,7 +1,7 @@
 <div class="wrap">
     <h1>Webhooks</h1>
     <hr/>
-    <form method="POST" id="js-webhook-form" action="options.php" enctype="multipart/form-data">
+    <form method="POST" id="js-webhook-form" action="" enctype="multipart/form-data">
         <?php settings_fields( self::SETTINGS_GROUP ); ?>
         <h2>Settings</h2>
 
@@ -17,8 +17,9 @@
             </tr>            
         <?php
             $table_manager = BRG_Webhook_Table_Manager::get_instance();
-            $webhooks_json = $table_manager->get_user_webhooks();
-            $webhooks = !empty( $webhooks_json ) ? json_decode( $webhooks_json, true ) : array();
+            $webhooks = $table_manager->get_user_webhooks();
+            $webhooks = is_array( $webhooks ) ? $webhooks : array();
+
             foreach( $webhooks as $index => $webhook ) { ?>
                 <tr class="new-webhook webhook-<?php echo $index; ?>">
                     <td>Action</td>

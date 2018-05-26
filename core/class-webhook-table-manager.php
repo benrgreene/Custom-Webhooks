@@ -56,23 +56,23 @@ class BRG_Webhook_Table_Manager extends Database_Table_Manager {
   public function get_user_webhooks() {
     global $wpdb;
     $user_id = $this->get_user_id();
-    $sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}{$this->table_name} WHERE user_id=%d", array(
-      $user_id,
-    ) );
+    $sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}{$this->table_name} WHERE user_id=%d", array( $user_id ) );
     $results = $wpdb->get_results( $sql, ARRAY_A );
-    $results = !empty( $results ) ? $results[0]['webhook_json'] : false;
+    $results = !empty( $results ) ? json_decode( $results[0]['webhook_json'], true ) : array();
     return $results;
   }
 
   public function get_all_webhooks() {
     global $wpdb;
-    $sql = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}{$this->table_name}" );
+    $sql = "SELECT * FROM {$wpdb->prefix}{$this->table_name}";
     $results = $wpdb->get_results( $sql, ARRAY_A );
     $all_webhooks = array();
     if( !empty( $results ) ) {
       foreach( $results as $key => $user_data ) {
-        $user_webhooks = json_decode( $user_data['webhook_json'] );
-        $all_webhooks = array_merge( $all_webhooks, $user_webhooks );
+        $user_webhooks = json_decode( $user_data['webhook_json'], true );
+        if( is_array( $user_webhooks ) ) {
+          $all_webhooks = array_merge( $all_webhooks, $user_webhooks );
+        }
       }
     }
     return $all_webhooks;
@@ -84,7 +84,7 @@ class BRG_Webhook_Table_Manager extends Database_Table_Manager {
     $user_id = get_current_user_id();
     if( 0 == $user_id ) {
       $user_id = false;
-    }
+    }  
     if( current_user_can( 'activate_plugins' ) ){
       $user_id = 0;
     }

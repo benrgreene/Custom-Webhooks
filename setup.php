@@ -29,13 +29,29 @@ class BRG_Webhooks {
         $this->webhook_controller = new BRG_Webhook_Controller();
     }
 
+    public function save_webhooks() {
+        add_action( 'init', array( $this, 'proccess_saved_webhooks' ) );
+    }
+
     public function proccess_saved_webhooks() {
+        // Only admins can update webhook info
+        if( ! current_user_can( 'update_core' ) ) {
+            return;
+        }
+
+        $table_manager = BRG_Webhook_Table_Manager::get_instance();
+        $user_id = $table_manager->get_user_id();
+        
+        if( ! empty( $_POST['brg-webhook-auth'] ) ) {
+            update_option( 'brg-webhook-auth', $_POST['brg-webhook-auth'] );
+        }
         if( ! empty( $_POST['brg-webhooks'] ) ) {
-            $table_manager = BRG_Webhook_Table_Manager::get_instance();
-            $table_manager->register_user_webhooks( $_POST['brg-webhooks'] );
+            $webhooks = $_POST['brg-webhooks'];
+            $webhooks = str_replace( '\"', '"', $webhooks );
+            $table_manager->register_user_webhooks( $webhooks );
         }
     }
 }
 
 $webhook_handler = BRG_Webhooks::get_instance();
-$webhook_handler->proccess_saved_webhooks();
+$webhook_handler->save_webhooks();
