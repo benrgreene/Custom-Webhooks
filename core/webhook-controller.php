@@ -60,22 +60,26 @@ class BRG_Webhook_Controller {
             }
         }
 
-        // Want to allow developers the ability to modify the data.
-        $data = apply_filters( 'brg/webhook/data/' . $action, $data, $raw_data );
+        $data = apply_filters( 'brg/webhook/data/' . $action, $data, $default_data );
+
         return $data;
     }
 
     public function make_curl( $endpoint, $data ) {
         $ch = curl_init();
+        $headers = array(
+            'Content-Type: application/json',
+            'accept: text/json',
+        );
+        if( get_option( 'brg-webhook-auth' ) ) {
+            $headers[] = 'token: ' . get_option( 'brg-webhook-auth' );
+        }
 
         curl_setopt( $ch, CURLOPT_URL, $endpoint );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt( $ch, CURLOPT_ENCODING, '' );
         curl_setopt( $ch, CURLOPT_MAXREDIRS, 10 );
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'accept: text/json',
-        ) );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers );
         if( ! empty( $data ) ) {
             curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'POST' );
             curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
