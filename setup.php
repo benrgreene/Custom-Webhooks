@@ -1,7 +1,7 @@
 <?php
 
 /**
-    Plugin Name: Custom Webhooks for WordPress
+    Plugin Name: Custom Webhooks
     Plugin URI:
     Description: Add custom defined webhooks to your WordPress site
     Author: Ben Greene
