@@ -10,6 +10,9 @@ While all actions can send webhooks, not all will send body data. Here's the lis
 * **user_register**: This fires when a new user is registered on the site. All user info _EXCEPT_ password are sent.
 * **create_[tax-type]**: this is when a new taxonomy term of the type `tax-type` is registered (where `tax-type` is the slug of the taxonomy). Custom taxonomies are supported.
     
+## Filters & Actions
+
+Here is a list of the current actions in the plugin
 
 ## Contributing
 

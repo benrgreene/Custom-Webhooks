@@ -35,7 +35,14 @@ class BRG_Webhooks {
 
     public function proccess_saved_webhooks() {
         $table_manager = BRG_Webhook_Table_Manager::get_instance();
-        $user_id = $table_manager->get_user_id();
+        
+        // Make sure the user is logged in (and not trying to spoof this)
+        $user_id   = $table_manager->get_user_id();
+        $min_level = $this->admin_controller->get_min_level();
+        if( false === $user_id &&
+            current_user_can( $min_level ) ) {
+            return;
+        }
 
         if( ! empty( $_POST['brg-webhooks'] ) ) {
             $webhooks = $_POST['brg-webhooks'];
@@ -44,11 +51,8 @@ class BRG_Webhooks {
         }
 
         // Only admins can update webhook auth
-        if( ! current_user_can( 'update_core' ) ) {
-            return;
-        }
-
-        if( ! empty( $_POST['brg-webhook-auth'] ) ) {
+        if( ! empty( $_POST['brg-webhook-auth'] ) &&
+            current_user_can( 'update_core' ) ) {
             update_option( 'brg-webhook-auth', $_POST['brg-webhook-auth'] );
         }
     }
