@@ -1,6 +1,14 @@
 # Custom Webhooks
     
-Having trouble adding webhooks? No problem! Here's some ways you can get those webhooks sorted out. 
+Having trouble adding webhooks? No problem! Here's some ways you can get those webhooks sorted out.
+
+## What do the Webhooks do?
+
+The webhooks plugin allow admins to add webhooks on specific actions performed, such as when posts are published. 
+
+Adding a webhook is easy, for each webhook you want, simply add a URL that the webhook should be sent to, as well as the action that should fire the webhook (possible webhooks listed below).
+
+It's also possible to add a auth key that will be passed along with the webhooks, allowing for services receiving webhooks to securely receive webhooks.
 
 ## Currently Supported Actions
     
